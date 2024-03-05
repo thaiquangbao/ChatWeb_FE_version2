@@ -1,0 +1,72 @@
+// OTPConfirmationForm.scss
+
+.section-vertify {
+    display: flex;
+    flex-direction: column; // Hiển thị các phần tử theo hướng dọc
+    align-items: center; // Căn giữa các phần tử theo chiều ngang
+    position: fixed;
+    top: 50%;
+
+    left: 50%;
+    margin-top: 150px;
+
+    transform: translate(-50%, -50%);
+    background: rgba(255, 255, 255, 0.9);
+    padding: 20px;
+    border-radius: 10px;
+
+
+
+    & .heading {
+        text-align: center;
+        color: black; // Giữ nguyên màu chữ trắng
+    }
+
+    & .message {
+        text-align: center;
+        color: black; // Giữ nguyên màu chữ trắng
+    }
+
+    & .form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        & .otp-inputs {
+            display: flex;
+            justify-content: center;
+
+            & .input-vertify {
+                width: 40px;
+                height: 40px;
+                margin-right: 5px;
+                border-radius: 5px;
+                border: 1px solid #ccc;
+                text-align: center;
+                font-size: 16px;
+                outline: none;
+                background-color: #fff;
+            }
+            & .input-vertify.focused {
+                border: 2px solid orange; // Màu viền khi ô được focus
+                box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.3);
+
+            }
+        }
+
+        & .submit-button {
+            margin-top: 10px;
+            padding: 10px 20px;
+            border-radius: 5px;
+            background: #ff9903;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+    }
+
+    & .success {
+        text-align: center;
+        color: black;
+    }
+}

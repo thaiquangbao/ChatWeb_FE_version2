@@ -1,0 +1,13 @@
+.item {
+    margin: 20px;
+    display: flex;
+    justify-content: space-between;
+
+    & .item-name {
+        display: flex;
+
+        & .name {
+            padding-left: 20px;
+        }
+    }
+}
