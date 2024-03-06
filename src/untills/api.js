@@ -2,6 +2,7 @@ import axios from 'axios';
 const config = { withCredentials: true };
 const API_URL = 'http://localhost:3050/api';
 export const postEmail = async (data) => {
+
     return new Promise((reject, resolve) => {
         axios.post(`${API_URL}/auth/sendMail`, data, config)
             .then(res => {
@@ -12,12 +13,14 @@ export const postEmail = async (data) => {
             })
     })
 
+
 }
 export const postRegister = async (data) => {
     const res = axios.post(`${API_URL}/auth/register`, data, config)
     return res;
 }
 export const postValidRegister = async (data) => {
+
     return new Promise((reject, resolve) => {
         axios.post(`${API_URL}/auth/statusValid`, data, config)
             .then(res => {
@@ -40,11 +43,13 @@ export const postLogin = async (data) => {
                 resolve(err)
             })
     })
+
 }
 export const getAuthUser = () => {
     return axios.get(`${API_URL}/auth/status`, config)
 }
 export const getCookieExist = () => {
+
     return axios.get(`${API_URL}/auth/checkCookie`, config)
 
 }

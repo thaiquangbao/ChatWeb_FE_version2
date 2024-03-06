@@ -76,6 +76,7 @@ export const OTPConfirmationForm = () => {
             const validCode = data.auth;
             validCode.code = otpValues.join("");
 
+
             await postValidRegister(validCode)
                 .then(res => {
                     if (res.status === 200) {
@@ -103,6 +104,7 @@ export const OTPConfirmationForm = () => {
         // setIsCorrectOTP(true);
         // setTimeout(() => navigate('/page1'),3000);
         await postEmail(data.auth)
+
             .then((res) => {
                 if (res.status === 200) {
                     alert("Gửi mail thành công")
@@ -111,6 +113,7 @@ export const OTPConfirmationForm = () => {
             .catch(err => {
                 alert("Gửi mail không thành công")
             })
+
     };
     const handleKeyPress = (event) => {
         // Ngăn chặn sự kiện mặc định của phím Enter

@@ -1,8 +1,9 @@
-import React, { useEffect, useRef, useState } from 'react'
+
+import React, { useEffect, useState } from 'react'
 import './login.scss'
 import { Link, useNavigate } from 'react-router-dom';
 import { getCookieExist, postLogin } from '../../untills/api';
-import { Axios, AxiosError } from 'axios';
+
 
 const Login = () => {
 
@@ -12,6 +13,7 @@ const Login = () => {
     const naviGate = useNavigate();
     useEffect(() => {
         getCookieExist()
+
             .then((data) => {
                 if (data.status === 200) {
                     naviGate("/login")
@@ -26,6 +28,7 @@ const Login = () => {
             });
     }, [])
     const handleLogin = async (e) => {
+
         e.preventDefault();
         const data = {
             username,
@@ -33,17 +36,19 @@ const Login = () => {
         }
         try {
             await postLogin(data)
+
                 .then(data => {
                     naviGate("/page1");
                 })
                 .catch(err => {
                     if (err.response.status === 401) {
-
+                        console.log("Đúng lỗi rồi");
                     }
                     else {
                         console.log("Lỗi khác");
                     }
                 })
+
             // .then(data => {
             //     console.log(data);
             // })

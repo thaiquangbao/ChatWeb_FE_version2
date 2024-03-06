@@ -1,7 +1,8 @@
 import React, { useRef } from 'react'
 import './ui.scss'
 import Item from '../../component/item-mess/item'
-import { Link } from 'react-router-dom';
+
+import { Link, useNavigate } from 'react-router-dom';
 
 export const UiFirst = () => {
     const formRef = useRef(null);
@@ -10,6 +11,7 @@ export const UiFirst = () => {
     const formRefTT = useRef(null);
     const formRefG = useRef(null);
 
+    const navigate = useNavigate()
 
     const handleButtonClickGroup = () => {
         if (formRefG.current.style.display === 'block') {
