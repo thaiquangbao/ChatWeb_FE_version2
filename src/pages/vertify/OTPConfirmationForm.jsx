@@ -3,7 +3,7 @@ import verifiedImage from './verified.gif'; // Import image
 import './OTPConfirmationForm.scss'; // Import SCSS file
 import { Link, useNavigate } from 'react-router-dom';
 import { Auth } from '../../untills/context/SignupContext';
-import { postEmail, postValidRegister } from '../../untills/api';
+import { postEmail, postValidRegister, removeCookie } from '../../untills/api';
 export const OTPConfirmationForm = () => {
     const [isCorrectOTP, setIsCorrectOTP] = useState(false);
     const [otpValues, setOTPValues] = useState(['', '', '', '', '', '']);
@@ -72,18 +72,23 @@ export const OTPConfirmationForm = () => {
         event.preventDefault();
         // Kiểm tra xem tất cả các ô đã được nhập và có giá trị hợp lệ không
         if (otpValues.every(val => val !== '' && !isNaN(val))) { // Kiểm tra xem các ô đã được nhập số hay chưa
-            console.log("OTP values:", );
             event.preventDefault();
             const validCode = data.auth;
             validCode.code = otpValues.join("");
+            
             await postValidRegister(validCode)
             .then(res => {
-                setIsCorrectOTP(true)
-                setTimeout(() => navigate('/login'),3000);
-             
+                if (res.status === 200) {
+                    removeCookie()
+                    setTimeout(() => navigate('/login'),3000);
+                }
+                else {
+                    navigate("/signup")
+                }
+                
             })
             .catch(err =>{
-                console.log(err); // mã không thành công
+                alert("Mã không đúng"); // mã không thành công
             })
             
             //
@@ -99,10 +104,12 @@ export const OTPConfirmationForm = () => {
         // setTimeout(() => navigate('/page1'),3000);
         await postEmail(data.auth)
         .then((res) => {
-            console.log(res);
+            if (res.status === 200) {
+                alert("Gửi mail thành công")
+            }
         })
         .catch(err => {
-            console.log(err);
+            alert("Gửi mail không thành công")
         })
     };
     const handleKeyPress = (event) => {

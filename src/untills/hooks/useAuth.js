@@ -8,8 +8,8 @@ export function useAuth() {
     useEffect(() => {
       getAuthUser() 
       .then(({data}) => {
-        
-          updateAuthUser(data);
+          updateAuthUser(data.auth);
+          
           setTimeout(() => setLoading(false), 3000)
       })
       .catch((err) => {

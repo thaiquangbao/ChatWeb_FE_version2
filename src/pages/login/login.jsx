@@ -1,12 +1,27 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import './login.scss'
 import { Link, useNavigate } from 'react-router-dom';
-import { postLogin } from '../../untills/api';
+import { getCookieExist, postLogin } from '../../untills/api';
 
 const Login = () => {
     const [username, setEmail] = useState('');
     const [password, setPassword] = useState('');
- const naviGate = useNavigate();
+    const naviGate = useNavigate();
+    useEffect(() => {
+        getCookieExist()
+        .then((data) => {
+            if (data.status === 200) {
+               naviGate("/login") 
+            }
+            else{
+                naviGate("/page1")
+            }
+        })
+        .catch((err) => {
+            naviGate("/page1")
+            
+        });
+    },[])
     const handleLogin = async (e) =>{
         e.preventDefault();
         const data = {
@@ -14,9 +29,26 @@ const Login = () => {
             password
         }
         try {
-            await postLogin(data);
+            await postLogin(data)
+            .then(data => {
+                naviGate("/page1");
+            })
+            .catch(err => {
+                if (err.response.status === 401) {
+                    console.log("Đúng lỗi rồi");
+                }
+                else{
+                    console.log("Lỗi khác");
+                }
+            })  
+            // .then(data => {
+            //     console.log(data);
+            // })
+            // .catch(err => {
+            //     console.log(err, "đây");
+            // })
             //naviGate('/vertify');
-            setTimeout(() => naviGate('/page1'),3000);
+            //setTimeout(() => naviGate('/page1'),3000);
         } catch (error) {
             console.log(error);
         }

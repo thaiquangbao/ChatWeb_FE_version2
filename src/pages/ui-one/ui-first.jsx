@@ -1,19 +1,14 @@
 import React, { useEffect, useRef } from 'react'
 import './ui.scss'
 import Item from '../../component/item-mess/item'
-import { Link } from 'react-router-dom';
-import Cookies from 'js-cookie';
-import { useCookies } from 'react-cookie';
+import { Link, useNavigate } from 'react-router-dom';
 export const UiFirst = () => {
     const formRef = useRef(null);
     //1 dong moi
     const overla = useRef(null);
     const formRefTT = useRef(null);
     const formRefG = useRef(null);
-    const [cookie, setCookie] = useCookies(['Session_JS']);
-    useEffect(() => {
-        console.log(cookie);
-    })
+    const navigate = useNavigate()
     const handleButtonClickGroup = () => {
         if (formRefG.current.style.display === 'block') {
             //1 dong moi
