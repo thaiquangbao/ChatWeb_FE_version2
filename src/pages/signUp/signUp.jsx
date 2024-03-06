@@ -11,7 +11,7 @@ export const SignUp = () => {
     const [email, setEmail] = useState('');
     const [passWord, setPassword] = useState('');
     const [avatar, setAvatar] = useState('');
-    const {handler} = useContext(Auth)
+    const { handler } = useContext(Auth)
     const naviGate = useNavigate();
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -32,19 +32,19 @@ export const SignUp = () => {
         }
         try {
             await postRegister(data)
-            .then((res) => {
-                
-                localStorage.setItem('token', res.data.token);
-                handler.setAuth(res.data.userDetail);
-                naviGate('/vertify');
-            })
-            .catch(err => {
-                console.log(err);
-            })
+                .then((res) => {
+
+                    localStorage.setItem('token', res.data.token);
+                    handler.setAuth(res.data.userDetail);
+                    naviGate('/vertify');
+                })
+                .catch(err => {
+                    console.log(err);
+                })
         } catch (error) {
             console.log(error);
         }
-        
+
     };
     return (
         <section>
@@ -55,13 +55,13 @@ export const SignUp = () => {
                         <input type="text" className='form-input' placeholder='FullName' value={fullName} onChange={(e) => setFullName(e.target.value)} />
                     </div>
                     <div className="form-group">
-                        <input type="date" className='form-input' value={dateOfBirth} onChange={(e) => setDateOfBirth(e.target.value)}/>
+                        <input type="date" className='form-input' value={dateOfBirth} onChange={(e) => setDateOfBirth(e.target.value)} />
                     </div>
                     <div className="form-group">
-                        <input type="tel" className='form-input' placeholder='number-phone' value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)}/>
+                        <input type="tel" className='form-input' placeholder='number-phone' value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />
                     </div>
                     <div className="form-group">
-                        <input type="text" className='form-input' placeholder='Email' value={email} onChange={(e) => setEmail(e.target.value)}/>
+                        <input type="text" className='form-input' placeholder='Email' value={email} onChange={(e) => setEmail(e.target.value)} />
                     </div>
                     <div className="form-group">
                         <input type="password" className='form-input' placeholder='Password' value={passWord} onChange={(e) => setPassword(e.target.value)} />
@@ -70,7 +70,7 @@ export const SignUp = () => {
                         </div>
                     </div>
                     <div className="form-group">
-                        <input type="text" className='form-input' placeholder='Avatar' value={avatar} onChange={(e) => setAvatar(e.target.value)}/>
+                        <input type="text" className='form-input' placeholder='Avatar' value={avatar} onChange={(e) => setAvatar(e.target.value)} />
                     </div>
                     {/* <Link to={'/vertify'} className='link-login'></Link > */}
                     <button className='form-submit-up' type='submit' >Sign Up</button>
