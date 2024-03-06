@@ -53,9 +53,21 @@
 
             }
         }
-
+        
         & .submit-button {
-            margin-top: 10px;
+            margin-top: 20px;
+            margin-left: 35px;
+            padding: 10px 20px;
+            border-radius: 5px;
+            background: #ff9903;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        & .send-code-button {
+            margin-top: 20px;
+
             padding: 10px 20px;
             border-radius: 5px;
             background: #ff9903;
@@ -68,5 +80,45 @@
     & .success {
         text-align: center;
         color: black;
+    }
+    & .submit-button {
+        margin-top: 20px;
+        margin-left: 35px;
+        padding: 10px 20px;
+        border-radius: 5px;
+        background: #ff9903;
+        color: #fff;
+        border: none;
+        cursor: pointer;
+    }
+
+    & .send-code-button {
+        margin-top: 20px;
+
+        padding: 10px 20px;
+        border-radius: 5px;
+        background: #ff9903;
+        color: #fff;
+        border: none;
+        cursor: pointer;
+    }
+    & .error-box {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-style: italic;
+        margin-top: 15px;
+        font-weight: 500;
+
+
+        background-color: red;
+        color: white;
+        padding: 10px;
+        border-radius: 5px;
+
+        & i {
+            margin-right: 10px;
+        }
+
     }
 }

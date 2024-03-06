@@ -10,6 +10,8 @@ export const OTPConfirmationForm = () => {
     const navigate = useNavigate();
     const [focusedIndex, setFocusedIndex] = useState(-1); // Index của ô được focus
     const [errorMessage, setErrorMessage] = useState(null); // Thông báo lỗi
+    const [showSubmitButton, setShowSubmitButton] = useState(false); // State để điều khiển việc hiển thị nút "Submit"
+    const [showError, setShowError] = useState(false); // State để điều khiển việc hiển thị thông báo lỗi
     const inputRefs = useRef([]);
     const {data} = useContext(Auth)
     useEffect(()=>{
@@ -23,7 +25,14 @@ export const OTPConfirmationForm = () => {
             navigate('/signup');
         }
     }, [localStorage.getItem('token'),data.auth])
-    
+    useEffect(() => {
+        if (showError) {
+            const timeout = setTimeout(() => {
+                setShowError(false);
+            }, 5000);
+            return () => clearTimeout(timeout);
+        }
+    }, [showError]);
     const handleInputChange = (index, value) => {
         // Kiểm tra xem giá trị mới là một số hay không
         if (!isNaN(value) && value !== '') {
@@ -50,14 +59,14 @@ export const OTPConfirmationForm = () => {
     //     })
     // };
     const handleBackspace = (event, index) => {
-        if (event.key === 'Backspace' && index > 0 && !otpValues[index]) {
-            // Xóa giá trị của ô hiện tại
+        if (event.key === 'Backspace' && index >= 0 && index < otpValues.length) {
             const newOTPValues = [...otpValues];
-            newOTPValues[index - 1] = '';
+            newOTPValues[index] = '';
             setOTPValues(newOTPValues);
 
-            // Chuyển focus đến ô trước đó
-            inputRefs.current[index - 1].focus();
+            if (index > 0) {
+                inputRefs.current[index - 1].focus();
+            }
         }
     };
 
@@ -70,12 +79,10 @@ export const OTPConfirmationForm = () => {
     };
     const handleSubmit = async (event) => {
         event.preventDefault();
-        // Kiểm tra xem tất cả các ô đã được nhập và có giá trị hợp lệ không
-        if (otpValues.every(val => val !== '' && !isNaN(val))) { // Kiểm tra xem các ô đã được nhập số hay chưa
-            event.preventDefault();
+
+        if (otpValues.every(val => val !== '' && !isNaN(val))) {
             const validCode = data.auth;
             validCode.code = otpValues.join("");
-            
             await postValidRegister(validCode)
             .then(res => {
                 if (res.status === 200) {
@@ -90,22 +97,19 @@ export const OTPConfirmationForm = () => {
             .catch(err =>{
                 alert("Mã không đúng"); // mã không thành công
             })
-            
-            //
         } else {
-            setErrorMessage("Please enter the full and valid OTP codes.");
+            setErrorMessage("");
+            setShowError(true);
         }
     };
     const handleSendMail = async (event) => {
         event.preventDefault();
-        // Giai đoạn này sẽ kiểm tra xem mã OTP có chính xác không
-        // Nếu đúng, đặt isCorrectOTP thành true
-        // setIsCorrectOTP(true);
-        // setTimeout(() => navigate('/page1'),3000);
+
         await postEmail(data.auth)
         .then((res) => {
             if (res.status === 200) {
                 alert("Gửi mail thành công")
+                setShowSubmitButton(true);
             }
         })
         .catch(err => {
@@ -123,7 +127,7 @@ export const OTPConfirmationForm = () => {
             {!isCorrectOTP ? (
                 <div>
                     <h2 className="heading">Verify Account</h2>
-                    <p className="message">Please enter the 6-digit verification code sent to email </p>
+                    <p className="message">Please enter the 6-digit verification code sent to email {data.auth.email} </p>
                     <div className="form" onKeyDown={handleKeyPress} tabIndex="0">
                         <div className="otp-inputs">
                             {otpValues.map((value, index) => (
@@ -137,21 +141,29 @@ export const OTPConfirmationForm = () => {
                                     onKeyDown={(event) => handleBackspace(event, index)}
                                     onFocus={() => handleFocus(index)}
                                     onBlur={handleBlur}
-                                    onClick={() => inputRefs.current[index].focus()} // Chuyển focus đến ô được nhấp chuột vào
+                                    onClick={() => inputRefs.current[index].focus()}
                                     required
                                     className={`input-vertify ${focusedIndex === index ? 'focused' : ''}`}
                                     ref={(input) => (inputRefs.current[index] = input)}
-                                    maxLength={1} // Chỉ cho phép nhập một ký tự
-                                    style={{ textAlign: 'center' }} // Canh giữa văn bản trong input
+                                    maxLength={1}
+                                    style={{ textAlign: 'center' }}
                                 />
                             ))}
                         </div>
-                        <button className='submit-button' onClick={handleSubmit}>Sign In</button>
-                        {errorMessage && <div className="error-message">{errorMessage}</div>}
+
+                        <div className='button-verify-wrapper'>
+                            <button className="send-code-button" onClick={handleSendMail}>Send Code</button>
+                            {showSubmitButton && (
+                                <button className='submit-button' onClick={handleSubmit}>Submit</button>
+                            )}
+                        </div>
                     </div>
-                    
-                        <button onClick={handleSendMail} >Send Code</button>
-                    
+
+                    {showError && (
+                        <div className="error-box">
+                            <i className='bx bxs-x-circle'></i> Please enter the full and valid OTP codes
+                        </div>
+                    )}
                 </div>
             ) : (
                 <div className="success">
