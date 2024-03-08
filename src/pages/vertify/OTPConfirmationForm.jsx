@@ -1,9 +1,10 @@
 import React, { useState, useRef, useContext, useEffect } from 'react';
 import verifiedImage from './verified.gif'; // Import image
 import './OTPConfirmationForm.scss'; // Import SCSS file
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Auth } from '../../untills/context/SignupContext';
 import { postEmail, postValidRegister, removeCookie } from '../../untills/api';
+
 export const OTPConfirmationForm = () => {
     const [isCorrectOTP, setIsCorrectOTP] = useState(false);
     const [otpValues, setOTPValues] = useState(['', '', '', '', '', '']);
@@ -13,18 +14,21 @@ export const OTPConfirmationForm = () => {
     const [showSubmitButton, setShowSubmitButton] = useState(false); // State để điều khiển việc hiển thị nút "Submit"
     const [showError, setShowError] = useState(false); // State để điều khiển việc hiển thị thông báo lỗi
     const inputRefs = useRef([]);
-    const {data} = useContext(Auth)
-    useEffect(()=>{
+    const { data } = useContext(Auth);
+    const [announcement, setAnnouncement] = useState('TuanAnh');
+    const announcements = useRef([]);
+    useEffect(() => {
         const token = localStorage.getItem('token');
         const user = data.auth
         if (token && user) {
-            
+
             navigate('/vertify');
         }
-        else{
+        else {
             navigate('/signup');
         }
-    }, [localStorage.getItem('token'),data.auth])
+
+    }, [localStorage.getItem('token'), data.auth])
     useEffect(() => {
         if (showError) {
             const timeout = setTimeout(() => {
@@ -77,26 +81,38 @@ export const OTPConfirmationForm = () => {
     const handleBlur = () => {
         setFocusedIndex(-1);
     };
+    const thongbao = useRef(null);
+    const thongbaoEr = useRef(null);
     const handleSubmit = async (event) => {
         event.preventDefault();
 
         if (otpValues.every(val => val !== '' && !isNaN(val))) {
             const validCode = data.auth;
             validCode.code = otpValues.join("");
+
             await postValidRegister(validCode)
-            .then(res => {
-                if (res.status === 200) {
-                    removeCookie()
-                    setTimeout(() => navigate('/login'),3000);
-                }
-                else {
-                    navigate("/signup")
-                }
-                
-            })
-            .catch(err =>{
-                alert("Mã không đúng"); // mã không thành công
-            })
+                .then(res => {
+                    if (res.status === 200) {
+                        removeCookie()
+
+                        thongbao.current.style.top = "-60px";
+                        setTimeout(() => navigate('/login'), 4000);
+                    }
+                    else {
+                        navigate("/signup")
+                    }
+
+                })
+                .catch(err => {
+                    // alert("Mã không đúng"); // mã không thành công
+                    setShowError(false)
+                    thongbaoEr.current.style.display = "block";
+                    setTimeout(() => {
+                        thongbaoEr.current.style.display = "none";
+                    }, 6000);
+
+                })
+
         } else {
             setErrorMessage("");
             setShowError(true);
@@ -106,15 +122,24 @@ export const OTPConfirmationForm = () => {
         event.preventDefault();
 
         await postEmail(data.auth)
-        .then((res) => {
-            if (res.status === 200) {
-                alert("Gửi mail thành công")
-                setShowSubmitButton(true);
-            }
-        })
-        .catch(err => {
-            alert("Gửi mail không thành công")
-        })
+            .then((res) => {
+                if (res.status === 200) {
+                    setAnnouncement('Sending email success')
+                    announcements.current.style.top = '-120px';
+                    setTimeout(() => {
+                        announcements.current.style.top = '-240px';
+                    }, 3000);
+                    setShowSubmitButton(true);
+                }
+            })
+            .catch(err => {
+                setAnnouncement("Sending email failed")
+                announcements.current.style.top = '-120px';
+                setTimeout(() => {
+                    announcements.current.style.top = '-240px';
+                }, 3000);
+            })
+
     };
     const handleKeyPress = (event) => {
         // Ngăn chặn sự kiện mặc định của phím Enter
@@ -122,12 +147,27 @@ export const OTPConfirmationForm = () => {
             event.preventDefault();
         }
     };
+
+    useEffect(() => {
+
+        if (!data.auth?.email) {
+            navigate('/signup');
+        }
+    }, [data.auth?.email]);
+
     return (
         <section className='section-vertify'>
             {!isCorrectOTP ? (
                 <div>
+                    <div className='announcement' ref={announcements}>{announcement}</div>
+                    <div id='thongbaoSignUp' ref={thongbao}>
+                        Sign Up Success
+                    </div>
+                    <div id='thongbaoMaErr' ref={thongbaoEr} >
+                        Code is incorrect
+                    </div>
                     <h2 className="heading">Verify Account</h2>
-                    <p className="message">Please enter the 6-digit verification code sent to email {data.auth.email} </p>
+                    <p className="message">Please enter the 6-digit verification code sent to email {data.auth?.email} </p>
                     <div className="form" onKeyDown={handleKeyPress} tabIndex="0">
                         <div className="otp-inputs">
                             {otpValues.map((value, index) => (
@@ -158,7 +198,6 @@ export const OTPConfirmationForm = () => {
                             )}
                         </div>
                     </div>
-
                     {showError && (
                         <div className="error-box">
                             <i className='bx bxs-x-circle'></i> Please enter the full and valid OTP codes

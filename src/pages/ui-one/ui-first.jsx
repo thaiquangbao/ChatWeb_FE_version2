@@ -1,14 +1,18 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useRef } from 'react'
 import './ui.scss'
 import Item from '../../component/item-mess/item'
+
 import { Link, useNavigate } from 'react-router-dom';
+
 export const UiFirst = () => {
     const formRef = useRef(null);
     //1 dong moi
     const overla = useRef(null);
     const formRefTT = useRef(null);
     const formRefG = useRef(null);
+
     const navigate = useNavigate()
+
     const handleButtonClickGroup = () => {
         if (formRefG.current.style.display === 'block') {
             //1 dong moi
@@ -65,7 +69,7 @@ export const UiFirst = () => {
                     <div className='list-icon'>
                         {/* doi 5 dong nay */}
                         <Link><i className='bx bx-home'></i></Link>
-                        <Link> <i className='bx bxs-contact' ></i></Link>
+                        <Link to={'/contact'}> <i className='bx bxs-contact' ></i></Link>
                         <Link><i className='bx bx-cog' ></i></Link>
                         <Link to={'/cloud'}> <i className='bx bx-cloud' ></i></Link>
                         <Link> <i className='bx bx-briefcase'></i></Link>
@@ -74,9 +78,9 @@ export const UiFirst = () => {
 
                     </div>
                     <div className='avt'>
-                        <button className='btn-avt' onClick={handleButtonClickTT}><img src="https://th.bing.com/th/id/OIP.dOTjvq_EwW-gR9sO5voajQHaHa?rs=1&pid=ImgDetMain" alt="" style={{ width: '80%', borderRadius: "50px" }} /></button>
+                        <button className='btn-avt' onClick={handleButtonClickTT}><img src="https://th.bing.com/th/id/OIP.dOTjvq_EwW-gR9sO5voajQHaHa?rs=1&pid=ImgDetMain" alt="" style={{ width: '100%', borderRadius: "50px" }} /></button>
 
-                        <span>tun anh</span>
+
                     </div>
                 </div>
                 <div className='section-two'>
@@ -139,7 +143,7 @@ export const UiFirst = () => {
                     </div>
                     {/* doi het cai form nay */}
                     <div id='myFormTT' ref={formRefTT}>
-                        < h3>Personal Information <button className='btn-off' onClick={handleButtonDeTT}><i class='bx bx-x'></i></button></h3>
+                        < h3>Personal Information <button className='btn-off' onClick={handleButtonDeTT}><i className='bx bx-x'></i></button></h3>
 
                         <form >
                             <img id='background' src='https://th.bing.com/th/id/OIP.dOTjvq_EwW-gR9sO5voajQHaHa?rs=1&pid=ImgDetMain' alt="" />
