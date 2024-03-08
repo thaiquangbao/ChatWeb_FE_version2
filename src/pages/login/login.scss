@@ -21,21 +21,21 @@ section {
         align-items: center;
 
         & #thongbao {
-            display: block;
+
             right: 0;
             top: 0;
-            left: -100rem;
+            right: -500px;
             border: 3px solid black;
-            position: absolute;
+            position: fixed;
             padding: 30px;
             border-radius: 5px;
             background-color: rgb(210, 212, 213);
             font-size: 20px;
-            width: 100px;
+            width: 300px;
             color: rgb(223, 98, 36);
             -webkit-transition: width 2s;
             /* For Safari 3.1 to 6.0 */
-            transition: width 2s;
+            transition: 0.3s;
             z-index: 1000;
         }
 

@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import './login.scss'
 import { Link, useNavigate } from 'react-router-dom';
 import { getCookieExist, postLogin } from '../../untills/api';
@@ -42,7 +42,11 @@ const Login = () => {
                 })
                 .catch(err => {
                     if (err.response.status === 401) {
-                        console.log("Đúng lỗi rồi");
+
+                        thongbao.current.style.right = "0";
+                        setTimeout(() => {
+                            thongbao.current.style.right = "-500px";
+                        }, 1000);
                     }
                     else {
                         console.log("Lỗi khác");

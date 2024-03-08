@@ -1,9 +1,11 @@
-import React, { useContext, useState, useEffect } from 'react'
+import React, { useContext, useState, useEffect, useRef } from 'react'
 import './signUp.scss'
 import { Link, useNavigate } from 'react-router-dom';
 import { postRegister } from '../../untills/api';
 import { SignupContext } from '../../untills/context/SignupContext';
 import { Auth } from '../../untills/context/SignupContext';
+import { set } from 'react-hook-form';
+import { AxiosError } from 'axios';
 export const SignUp = () => {
     const [fullName, setFullName] = useState('');
     const [dateOfBirth, setDateOfBirth] = useState('');
@@ -13,6 +15,16 @@ export const SignUp = () => {
     const [avatar, setAvatar] = useState('');
     const { handler } = useContext(Auth)
     const naviGate = useNavigate();
+
+    const regexPatterns = {
+        fullName: /^[a-zA-Z\s_-]+$/,
+
+        phoneNumber: /^(0|\+84)[1-9]{9}$/,
+        //phoneNumber: /^\+84[1-9]{9}$/,
+        email: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+        password: /^[a-zA-Z\d]{6,}$/,
+
+    };
     useEffect(() => {
         const token = localStorage.getItem('token');
         if (token) {
@@ -20,6 +32,8 @@ export const SignUp = () => {
             handler.setAuth(undefined)
         }
     })
+    const errFormRef = useRef([])
+    const [errForm, setErrForm] = useState('')
     const handleSignUp = async (event) => {
         event.preventDefault();
         const data = {
@@ -30,6 +44,36 @@ export const SignUp = () => {
             passWord,
             avatar
         }
+        let processedPhoneNumber = phoneNumber;
+        if (phoneNumber.startsWith('0')) {
+            processedPhoneNumber = `+84${phoneNumber.slice(1)}`;
+        }
+        // if (!regexPatterns.phoneNumber.test(processedPhoneNumber)) {
+
+        //     alert(phoneNumber);
+        //     return;
+        // }
+        setPhoneNumber(processedPhoneNumber)
+
+
+        if (!regexPatterns.fullName.test(fullName)) {
+            setErrForm('Please enter the name in the correct format.')
+            errFormRef.current.style.top = '0';
+            setTimeout(() => {
+                errFormRef.current.style.top = '-100px';
+            }, 3000);
+            return;
+        }
+
+        if (!regexPatterns.email.test(email)) {
+            setErrForm('Please enter email address in correct format.');
+            errFormRef.current.style.top = '0';
+            setTimeout(() => {
+                errFormRef.current.style.top = '-100px';
+            }, 3000);
+            return;
+        }
+
         try {
             await postRegister(data)
                 .then((res) => {
@@ -39,16 +83,26 @@ export const SignUp = () => {
                     naviGate('/vertify');
                 })
                 .catch(err => {
-                    console.log(err);
+                    if (AxiosError.ERR_BAD_REQUEST) {
+                        setErrForm(err.response.data.message);
+                        errFormRef.current.style.top = '0';
+                        setTimeout(() => {
+                            errFormRef.current.style.top = '-100px';
+                        }, 3000);
+                    }
+
+
                 })
         } catch (error) {
             console.log(error);
         }
 
     };
+
     return (
         <section>
             <div className='wrapper'>
+                <div className='errForm' ref={errFormRef}>{errForm}</div>
                 <form onSubmit={handleSignUp} id="form-signUp" >
                     <h1 className="form-heading">Sign up</h1>
                     <div className="form-group">

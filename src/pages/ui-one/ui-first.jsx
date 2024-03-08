@@ -78,9 +78,9 @@ export const UiFirst = () => {
 
                     </div>
                     <div className='avt'>
-                        <button className='btn-avt' onClick={handleButtonClickTT}><img src="https://th.bing.com/th/id/OIP.dOTjvq_EwW-gR9sO5voajQHaHa?rs=1&pid=ImgDetMain" alt="" style={{ width: '80%', borderRadius: "50px" }} /></button>
+                        <button className='btn-avt' onClick={handleButtonClickTT}><img src="https://th.bing.com/th/id/OIP.dOTjvq_EwW-gR9sO5voajQHaHa?rs=1&pid=ImgDetMain" alt="" style={{ width: '100%', borderRadius: "50px" }} /></button>
 
-                        <span>tun anh</span>
+
                     </div>
                 </div>
                 <div className='section-two'>
