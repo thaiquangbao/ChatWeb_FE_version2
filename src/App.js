@@ -12,39 +12,42 @@ import { RequireAuth } from './component/AuthenticatedRouter';
 import { AuthContext } from './untills/context/AuthContext';
 import SignupContext from './untills/context/SignupContext';
 import UiContact from './pages/contact/contact';
+import { SocketContext, socket } from './untills/context/SocketContext';
 
 function App() {
   const [user, setUser] = useState();
   return (
     <AuthContext.Provider value={{ user, updateAuthUser: setUser }}>
       <SignupContext>
-        <BrowserRouter>
-          <Routes>
+        <SocketContext.Provider value={socket}>
+          <BrowserRouter>
+            <Routes>
 
-            <Route path="/" Component={Home} />
-            <Route path="/signup" element={
+              <Route path="/" Component={Home} />
+              <Route path="/signup" element={
 
-              <SignUp />
+                <SignUp />
 
-            } />
-            <Route path="/vertify"
-              element={
+              } />
+              <Route path="/vertify"
+                element={
 
-                <OTPConfirmationForm />
+                  <OTPConfirmationForm />
 
+                }
+              />
+              <Route path="/login" Component={Login} />
+              <Route path="/page" element={
+                <RequireAuth>
+                  <UiFirst />
+                </RequireAuth>
               }
-            />
-            <Route path="/login" Component={Login} />
-            <Route path="/page1" element={
-              <RequireAuth>
-                <UiFirst />
-              </RequireAuth>
-            }
-            />
-            <Route path="/cloud" Component={UiCloud} />
-            <Route path="/contact" Component={UiContact} />
-          </Routes>
-        </BrowserRouter>
+              />
+              <Route path="/cloud" Component={UiCloud} />
+              <Route path="/contact" Component={UiContact} />
+            </Routes>
+          </BrowserRouter>
+        </SocketContext.Provider>  
       </SignupContext>
     </AuthContext.Provider>
   );

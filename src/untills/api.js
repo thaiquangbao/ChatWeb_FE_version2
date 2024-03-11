@@ -65,3 +65,26 @@ export const removeCookie = () => {
     })
 
 }
+// thay đổi chổ này
+export const getListRooms = () => {
+    return new Promise((reject, resolve) => {
+        axios.get(`${API_URL}/rooms`,config)
+        .then(res => {
+            reject(res);
+        })
+        .catch(err => {
+            resolve(err)
+        })
+    })
+}
+export const getRoomsMessages = async (data) => {
+    return new Promise((reject, resolve) => {
+        axios.post(`${API_URL}/messages/room`,data ,config)
+        .then(res => {
+            reject(res);
+        })
+        .catch(err => {
+            resolve(err)
+        })
+    })
+}

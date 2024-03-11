@@ -1,21 +1,18 @@
 import React from 'react'
 import './item.scss'
-const Item = ({ link, name, action, time, tt }) => {
+const Item = ({ link, name, action, time, tt, onClick }) => {
     return (
-        <div className='item'>
+        <button className='item' onClick={onClick}>
             <div className='item-name'>
                 <img src={link} alt="" style={{ width: '50px', borderRadius: "50px" }} />
                 <div className='name'>
-                    <span>{name}</span>
-                    <div>
-                        <span>{tt}</span>:
-                        <span>{action}</span>
-                    </div>
+                    <span className='mess-name'>{name}</span>
+                    <span className='mess-infor'>{tt}:{action}</span>
                 </div>
             </div>
             <span>{time}</span>
 
-        </div>
+        </button>
 
     )
 }

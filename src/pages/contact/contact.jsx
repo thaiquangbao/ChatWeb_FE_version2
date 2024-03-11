@@ -174,7 +174,7 @@ const UiContact = () => {
             <div className='wrapper'>
                 <div className='section-one'>
                     <div className='list-icon'>
-                        <Link to={'/page1'}> <i className='bx bx-home'></i></Link>
+                        <Link to={'/page'}> <i className='bx bx-home'></i></Link>
                         <Link to={'/uidsbb'} > <i className='bx bxs-contact' ></i></Link>
                         <Link><i className='bx bx-cog' ></i></Link>
                         <Link to={'/cloud'}> <i className='bx bx-cloud' ></i></Link>
