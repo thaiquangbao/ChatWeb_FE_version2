@@ -19,11 +19,11 @@ const Login = () => {
                     naviGate("/login")
                 }
                 else {
-                    naviGate("/page1")
+                    naviGate("/page")
                 }
             })
             .catch((err) => {
-                naviGate("/page1")
+                naviGate("/page")
 
             });
     }, [])
@@ -38,7 +38,7 @@ const Login = () => {
             await postLogin(data)
 
                 .then(data => {
-                    naviGate("/page1");
+                    naviGate("/page");
                 })
                 .catch(err => {
                     if (err.response.status === 401) {

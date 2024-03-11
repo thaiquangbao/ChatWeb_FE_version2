@@ -35,7 +35,7 @@ function App() {
               }
             />
             <Route path="/login" Component={Login} />
-            <Route path="/page1" element={
+            <Route path="/page" element={
               <RequireAuth>
                 <UiFirst />
               </RequireAuth>

@@ -1,18 +1,64 @@
-import React, { useRef } from 'react'
+import React, { useRef, useState, useContext, useEffect } from 'react'
 import './ui.scss'
 import Item from '../../component/item-mess/item'
-
+import { AuthContext } from '../../untills/context/AuthContext'
 import { Link, useNavigate } from 'react-router-dom';
-
+import { Mess } from './component/mess';
+import { getListRooms } from '../../untills/api';
+import { SocketContext } from '../../untills/context/SocketContext';
 export const UiFirst = () => {
     const formRef = useRef(null);
     //1 dong moi
     const overla = useRef(null);
     const formRefTT = useRef(null);
     const formRefG = useRef(null);
+    const navigate = useNavigate();
+    const [rooms, setRooms] = useState([]);
+    const { user } = useContext(AuthContext);
+    const [homemess, setHomemess] = useState();
+    const [nameRoom, setNameRoom] = useState();
+    const [avatar, setAvatar] = useState();
+    const socket = useContext(SocketContext);
+    // useEffect(() => {
+    //     socket.on('connected', () => console.log('Connected'));
+    //     socket.on('onMessages', messages => {
+    //         console.log('Messages Received');
+    //         console.log(messages);
+    //     })
+    //     // socket.on('onRooms', rooms =>{
+    //     //     console.log('Rooms Received');
+    //     // })
+    //     return () => {
+    //         socket.off('connected');
+    //         socket.off('onMessages')
+    //         // socket.off('onRooms')
+    //     }
+    // },[])
+    const getDisplayUser = (room) => {
+        return room.creator._id === user?._id
+        ? room.recipient : room.creator;
+    };
+    const getDisplayAuthor = (room) => {
+        const role = "Bạn"
+        const name = room.lastMessageSent.author.fullName;
+        const lastTwoChars = name.slice(-9);
+        return room.lastMessageSent.author.email === user?.email
+        ? role : lastTwoChars;
+    };
 
-    const navigate = useNavigate()
-
+    useEffect(() =>{
+        const fetchData = async () => {
+            getListRooms()
+            .then(res => {
+                setRooms(res.data);
+            })
+            .catch(err => {
+                console.log(err);
+            })
+        }
+        fetchData();
+         
+    },[])
     const handleButtonClickGroup = () => {
         if (formRefG.current.style.display === 'block') {
             //1 dong moi
@@ -60,6 +106,27 @@ export const UiFirst = () => {
         formRefG.current.style.display = 'none';
         overla.current.style.display = 'none';
     };
+    
+
+    const PageMess = () => {
+        if (!homemess) {
+            return (
+
+
+                <div className="baoquat">
+                    <div>
+                        <div style={{ fontSize: '50px', padding: '50px' }}>Welcome to </div>
+                        <div style={{ fontSize: '120px', color: ' rgb(240, 143, 23)', paddingLeft: '200px' }}>ZenChat </div>
+                    </div>
+                </div>
+            )
+        }
+        else {
+            return (
+                <Mess id={homemess} nameRoom={nameRoom} avatar={avatar} />
+            )
+        }
+    }
     return (
         <div className='container'>
             {/* 1 dong moi */}
@@ -78,7 +145,7 @@ export const UiFirst = () => {
 
                     </div>
                     <div className='avt'>
-                        <button className='btn-avt' onClick={handleButtonClickTT}><img src="https://th.bing.com/th/id/OIP.dOTjvq_EwW-gR9sO5voajQHaHa?rs=1&pid=ImgDetMain" alt="" style={{ width: '100%', borderRadius: "50px" }} /></button>
+                        <button className='btn-avt' onClick={handleButtonClickTT}><img src={user.avatar} alt="" style={{ width: '100%', borderRadius: "50px" }} /></button>
 
 
                     </div>
@@ -148,16 +215,18 @@ export const UiFirst = () => {
                         <form >
                             <img id='background' src='https://th.bing.com/th/id/OIP.dOTjvq_EwW-gR9sO5voajQHaHa?rs=1&pid=ImgDetMain' alt="" />
                             <div className='image-name'>
-                                <img src='https://th.bing.com/th/id/OIP.dOTjvq_EwW-gR9sO5voajQHaHa?rs=1&pid=ImgDetMain' alt="" style={{ width: '80px', borderRadius: "50px", border: '1px solid black' }} />
-                                <span id='name'>Tuấn Anh</span><br /><br />
+                                <img src={user.avatar} alt="" style={{ width: '80px', borderRadius: "50px", border: '1px solid black' }} />
+                                <span id='name'>{user.fullName}</span><br /><br />
                             </div>
                             <div className='infor'>
                                 <label >Gender:</label>
                                 <span id='gender'>Male</span> <br /><br />
                                 <label>Date of Birth:</label>
-                                <span id='birthday'>25/6/2002</span> <br /><br />
+                                <span id='birthday'>{user.dateOfBirth}</span> <br /><br />
+                                <label>Email:</label>
+                                <span id='birthday'>{user.email}</span> <br /><br />
                                 <label >Phone Number:</label>
-                                <span id='phone'>0919199199</span> <br /><br />
+                                <span id='phone'>{user.phoneNumber}</span> <br /><br />
                             </div>
 
                         </form>
@@ -184,232 +253,17 @@ export const UiFirst = () => {
                         </form>
                     </div> */}
                     <div className='list-tt'>
-                        <Item link={'https://th.bing.com/th/id/OIP.dOTjvq_EwW-gR9sO5voajQHaHa?rs=1&pid=ImgDetMain'} name={'Tuan Anh'} tt={'ban'} action={'di choi'} time={'8h'} />
-                        <Item link={'https://th.bing.com/th/id/OIP.dOTjvq_EwW-gR9sO5voajQHaHa?rs=1&pid=ImgDetMain'} name={'Tuan Anh'} tt={'ban'} action={'di choi'} time={'8h'} />
-                        <Item link={'https://th.bing.com/th/id/OIP.dOTjvq_EwW-gR9sO5voajQHaHa?rs=1&pid=ImgDetMain'} name={'Tuan Anh'} tt={'ban'} action={'di choi'} time={'8h'} />
-                        <Item link={'https://th.bing.com/th/id/OIP.dOTjvq_EwW-gR9sO5voajQHaHa?rs=1&pid=ImgDetMain'} name={'Tuan Anh'} tt={'ban'} action={'di choi'} time={'8h'} />
-                        <Item link={'https://th.bing.com/th/id/OIP.dOTjvq_EwW-gR9sO5voajQHaHa?rs=1&pid=ImgDetMain'} name={'Tuan Anh'} tt={'ban'} action={'di choi'} time={'8h'} />
-                        <Item link={'https://th.bing.com/th/id/OIP.dOTjvq_EwW-gR9sO5voajQHaHa?rs=1&pid=ImgDetMain'} name={'Tuan Anh'} tt={'ban'} action={'di choi'} time={'8h'} />
-                        <Item link={'https://th.bing.com/th/id/OIP.dOTjvq_EwW-gR9sO5voajQHaHa?rs=1&pid=ImgDetMain'} name={'Tuan Anh'} tt={'ban'} action={'di choi'} time={'8h'} />
-                        <Item link={'https://th.bing.com/th/id/OIP.dOTjvq_EwW-gR9sO5voajQHaHa?rs=1&pid=ImgDetMain'} name={'Tuan Anh'} tt={'ban'} action={'di choi'} time={'8h'} />
-                        <Item link={'https://th.bing.com/th/id/OIP.dOTjvq_EwW-gR9sO5voajQHaHa?rs=1&pid=ImgDetMain'} name={'Tuan Anh'} tt={'ban'} action={'di choi'} time={'8h'} />
-                        <Item link={'https://th.bing.com/th/id/OIP.dOTjvq_EwW-gR9sO5voajQHaHa?rs=1&pid=ImgDetMain'} name={'Tuan Anh'} tt={'ban'} action={'di choi'} time={'8h'} />
-                        <Item link={'https://th.bing.com/th/id/OIP.dOTjvq_EwW-gR9sO5voajQHaHa?rs=1&pid=ImgDetMain'} name={'Tuan Anh'} tt={'ban'} action={'di choi'} time={'8h'} />
-                        <Item link={'https://th.bing.com/th/id/OIP.dOTjvq_EwW-gR9sO5voajQHaHa?rs=1&pid=ImgDetMain'} name={'Tuan Anh'} tt={'ban'} action={'di choi'} time={'8h'} />
-                        <Item link={'https://th.bing.com/th/id/OIP.dOTjvq_EwW-gR9sO5voajQHaHa?rs=1&pid=ImgDetMain'} name={'Tuan Anh'} tt={'ban'} action={'di choi'} time={'8h'} />
-                        <Item link={'https://th.bing.com/th/id/OIP.dOTjvq_EwW-gR9sO5voajQHaHa?rs=1&pid=ImgDetMain'} name={'Tuan Anh'} tt={'ban'} action={'di choi'} time={'8h'} />
-                        <Item link={'https://th.bing.com/th/id/OIP.dOTjvq_EwW-gR9sO5voajQHaHa?rs=1&pid=ImgDetMain'} name={'Tuan Anh'} tt={'ban'} action={'di choi'} time={'8h'} />
-                        <Item link={'https://th.bing.com/th/id/OIP.dOTjvq_EwW-gR9sO5voajQHaHa?rs=1&pid=ImgDetMain'} name={'Tuan Anh'} tt={'ban'} action={'di choi'} time={'8h'} />
-
+                        {rooms.map(room => (
+                            <Item key={room._id} link={getDisplayUser(room).avatar} name={getDisplayUser(room).fullName} tt={getDisplayAuthor(room)} action={room.lastMessageSent.content} time={'3gio'} onClick={() => {setHomemess(room._id); 
+                                setAvatar(getDisplayUser(room).avatar);
+                                setNameRoom(getDisplayUser(room).fullName)
+                             }} />
+                            
+                        ))}
                     </div>
 
                 </div>
-                <div className='section-three'>
-                    <div className='title' >
-                        <div className='title-tt'>
-                            <img src='https://th.bing.com/th/id/OIP.dOTjvq_EwW-gR9sO5voajQHaHa?rs=1&pid=ImgDetMain' alt="" style={{ width: '50px', borderRadius: "50px", marginLeft: "5px" }} />
-                            <div className='inf-title'>
-                                <span className='name-title'>Tuan Anh</span>
-                                <div className='member'>
-                                    <i className='bx bxs-group' ></i>
-                                    <span>50 thành viên</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div className='icon'>
-                            <i className='bx bx-user-plus' ></i>
-                            <i className='bx bx-search-alt-2' ></i>
-                            <i className='bx bx-camera-movie'></i>
-                        </div>
-                    </div>
-
-                    <div className='inf-mess'>
-                        <div className='mess-you'>
-                            <img src='https://th.bing.com/th/id/OIP.dOTjvq_EwW-gR9sO5voajQHaHa?rs=1&pid=ImgDetMain' alt="" style={{ width: '50px', borderRadius: "50px" }} />
-                            <div className='inf-you'>
-                                <div className='tt'>
-                                    <span>Tuan Anh</span>
-                                    <span>10h19</span>
-                                </div>
-                                <div className='content'>
-                                    <p>con gsdddddddddddddddddddddddsdaffffffffffffffffà</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className='mess-you'>
-                            <img src='https://th.bing.com/th/id/OIP.dOTjvq_EwW-gR9sO5voajQHaHa?rs=1&pid=ImgDetMain' alt="" style={{ width: '50px', borderRadius: "50px" }} />
-                            <div className='inf-you'>
-                                <div className='tt'>
-                                    <span>Tuan Anh</span>
-                                    <span>10h19</span>
-                                </div>
-                                <div className='content'>
-                                    <p>con gà</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div className='mess-you'>
-                            <img src='https://th.bing.com/th/id/OIP.dOTjvq_EwW-gR9sO5voajQHaHa?rs=1&pid=ImgDetMain' alt="" style={{ width: '50px', borderRadius: "50px" }} />
-                            <div className='inf-you'>
-                                <div className='tt'>
-                                    <span>Tuan Anh</span>
-                                    <span>10h19</span>
-                                </div>
-                                <div className='content'>
-                                    <p>con gà</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div className='mess-you'>
-                            <img src='https://th.bing.com/th/id/OIP.dOTjvq_EwW-gR9sO5voajQHaHa?rs=1&pid=ImgDetMain' alt="" style={{ width: '50px', borderRadius: "50px" }} />
-                            <div className='inf-you'>
-                                <div className='tt'>
-                                    <span>Tuan Anh</span>
-                                    <span>10h19</span>
-                                </div>
-                                <div className='content'>
-                                    <p>con gà</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div className='mess-you'>
-                            <img src='https://th.bing.com/th/id/OIP.dOTjvq_EwW-gR9sO5voajQHaHa?rs=1&pid=ImgDetMain' alt="" style={{ width: '50px', borderRadius: "50px" }} />
-                            <div className='inf-you'>
-                                <div className='tt'>
-                                    <span>Tuan Anh</span>
-                                    <span>10h19</span>
-                                </div>
-                                <div className='content'>
-                                    <p>con gà </p>
-                                </div>
-                            </div>
-                        </div>
-                        <div className='mess-you'>
-                            <img src='https://th.bing.com/th/id/OIP.dOTjvq_EwW-gR9sO5voajQHaHa?rs=1&pid=ImgDetMain' alt="" style={{ width: '50px', borderRadius: "50px" }} />
-                            <div className='inf-you'>
-                                <div className='tt'>
-                                    <span>Tuan Anh</span>
-                                    <span>10h19</span>
-                                </div>
-                                <div className='content'>
-                                    <p>con ga </p>
-                                </div>
-                            </div>
-                        </div>
-                        <div className='mess-me'>
-                            <img src='https://th.bing.com/th/id/OIP.dOTjvq_EwW-gR9sO5voajQHaHa?rs=1&pid=ImgDetMain' alt="" style={{ width: '50px', borderRadius: "50px" }} />
-                            <div className='inf-you'>
-                                <div className='tt'>
-                                    <span>Tuan Anh</span>
-                                    <span>10h19</span>
-                                </div>
-                                <div className='content'>
-                                    <p>con safffffffffffffffffffff</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div className='mess-me'>
-                            <img src='https://th.bing.com/th/id/OIP.dOTjvq_EwW-gR9sO5voajQHaHa?rs=1&pid=ImgDetMain' alt="" style={{ width: '50px', borderRadius: "50px" }} />
-                            <div className='inf-you'>
-                                <div className='tt'>
-                                    <span>Tuan Anh</span>
-                                    <span>10h19</span>
-                                </div>
-                                <div className='content'>
-                                    <p>con gà</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div className='mess-me'>
-                            <img src='https://th.bing.com/th/id/OIP.dOTjvq_EwW-gR9sO5voajQHaHa?rs=1&pid=ImgDetMain' alt="" style={{ width: '50px', borderRadius: "50px" }} />
-                            <div className='inf-you'>
-                                <div className='tt'>
-                                    <span>Tuan Anh</span>
-                                    <span>10h19</span>
-                                </div>
-                                <div className='content'>
-                                    <p>con gà </p>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <div className='soan'>
-                        <div className='nd'>
-                            <input type="text" placeholder='Type a message here..' />
-                        </div>
-                        <div className='cachthuc'>
-                            <i className='bx bx-smile'></i>
-                            <i className='bx bx-image-alt' ></i>
-                            <i className='bx bx-link-alt' ></i>
-                            <i className='bx bxs-send'></i>
-                        </div>
-
-                    </div>
-                </div>
-                <div className='section-four'>
-                    <div className='title'>
-                        <h3>Thông tin</h3>
-                    </div>
-                    {/* them cai div section-four-cro bao het cac cai kia */}
-                    <div className='section-four-cro'>
-                        <div className='avt'>
-                            <img src="https://th.bing.com/th/id/OIP.dOTjvq_EwW-gR9sO5voajQHaHa?rs=1&pid=ImgDetMain" alt="" style={{ width: '70px', borderRadius: "50px" }} />
-                        </div>
-                        <div className='inf'>
-                            <p>Tuấn Anh</p>
-                            <i className='bx bx-edit-alt'></i>
-                        </div>
-                        <div className='thaotac'>
-                            <div className='thaotac-one'>
-                                <i className='bx bx-bell'></i>
-
-                            </div>
-                            <div className='thaotac-one'>
-                                <i className='bx bx-group'></i>
-
-                            </div>
-                            <div className='thaotac-one'>
-                                <i className='bx bxs-coffee-togo'></i>
-
-                            </div>
-                        </div>
-                        <div className='thaotac'>
-                            <div className='thaotac-two'>
-
-                                <span>Tắt thông báo</span>
-                            </div>
-                            <div className='thaotac-two'>
-
-                                <span>Thêm thành viên </span>
-                            </div>
-                            <div className='thaotac-two'>
-
-                                <span>Xóa trò chuyện</span>
-                            </div>
-                        </div>
-                        <div className='video'>
-                            <div className='title-video'>
-                                <span>Video</span>
-                                <i className='bx bx-image' ></i>
-                            </div>
-                            <div className='videos'>
-                                <img src="https://th.bing.com/th/id/OIP.dOTjvq_EwW-gR9sO5voajQHaHa?rs=1&pid=ImgDetMain" alt="" style={{ width: '90%' }} />
-                                <img src="https://th.bing.com/th/id/OIP.dOTjvq_EwW-gR9sO5voajQHaHa?rs=1&pid=ImgDetMain" alt="" style={{ width: '90%' }} />
-                                <img src="https://th.bing.com/th/id/OIP.dOTjvq_EwW-gR9sO5voajQHaHa?rs=1&pid=ImgDetMain" alt="" style={{ width: '90%' }} />
-                            </div>
-                        </div>
-                        <div className='file'>
-                            <div className='title-file'>
-                                <span>File</span>
-
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
+                <PageMess />
             </div>
         </div>
     )
