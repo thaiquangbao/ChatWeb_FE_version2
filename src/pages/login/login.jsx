@@ -1,12 +1,14 @@
-
 import React, { useEffect, useRef, useState } from 'react'
 import './login.scss'
 import { Link, useNavigate } from 'react-router-dom';
 import { getCookieExist, postLogin } from '../../untills/api';
+import Notification, { statusMessage } from '../../component/notification';
+import { useContext } from 'react';
+import { globalContext } from '../../component/context/globalContext';
 
 
 const Login = () => {
-
+    const { handler } = useContext(globalContext)
     const thongbao = useRef(null);
     const [username, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -16,15 +18,17 @@ const Login = () => {
 
             .then((data) => {
                 if (data.status === 200) {
+
                     naviGate("/login")
                 }
                 else {
                     naviGate("/page")
+                    handler.setProp({ status: statusMessage.SUCCESS, message: 'Login success' })
                 }
             })
             .catch((err) => {
                 naviGate("/page")
-
+                handler.setProp({ status: statusMessage.SUCCESS, message: 'Login success' })
             });
     }, [])
     const handleLogin = async (e) => {
@@ -68,7 +72,6 @@ const Login = () => {
     }
     return (
         <section>
-
             <div className='wrapper'>
                 <div id='thongbao' ref={thongbao}>
                     Incorrect username or password.
@@ -84,8 +87,8 @@ const Login = () => {
                         <input type="password" className='form-input' placeholder='Password' value={password} onChange={(e) => setPassword(e.target.value)} />
                         <div id="eye">
                             <i className="far fa-eye"></i>
+                        </div>    
                         </div>
-                    </div>
                     {/* <Link to={'/vertify'} className='link-login'></Link > */}
                     <button className='form-submit-in' type='submit' >Sign In</button>
                     <div className='mm'>

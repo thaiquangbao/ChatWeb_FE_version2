@@ -16,7 +16,6 @@ export const Mess = ({ id, nameRoom, avatar }) => {
         }
         getRoomsMessages(RoomMessages)
         .then((data) => {
-            console.log(data.data);
             setMessages(data.data);
         })
         .catch((err) => {
@@ -25,10 +24,9 @@ export const Mess = ({ id, nameRoom, avatar }) => {
     },[id])
     useEffect(() => {
         socket.on('connected', () => console.log('Connected'));
-        socket.on('onMessages', messages => {
-            console.log(messages);
-            setMessages(messages);
-        })
+        // socket.on('onMessages', messages => {
+        //     setMessages(messages);
+        // })
         // socket.on('onRooms', rooms =>{
         //     console.log('Rooms Received');
         // })
